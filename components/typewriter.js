@@ -164,7 +164,7 @@ export default class TypeWriter extends Component {
     const { visibleChars } = this.state;
     const component = (
       <Text {...rest}>
-        {children}
+        {children}|
       </Text>
     );
 
