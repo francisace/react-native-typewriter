@@ -1,4 +1,4 @@
-import React, { Children } from 'react';
+import React, { Children, useState, useEffect } from 'react';
 import { StyleSheet, Text } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -9,6 +9,25 @@ export default function hideSubstring(component, fixed, start, end) {
   let index = 0;
   let endIndex;
   let startIndex;
+
+  const [blinkAnim] = useState(new Animated.Value(0)); // Initial value for opacity: 0
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(blinkAnim, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(blinkAnim, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ]),
+    ).start();
+  }, []);
 
   if (start > end) {
     endIndex = start;
@@ -57,5 +76,10 @@ export default function hideSubstring(component, fixed, start, end) {
     return newChild || child;
   }
 
-  return cloneWithHiddenSubstrings(component);
+  return (
+    <>
+      {cloneWithHiddenSubstrings(component)}
+      <Animated.Text style={{ opacity: blinkAnim }}>|</Animated.Text>
+    </>
+  );
 }
